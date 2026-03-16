@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+
+        <meta charset="UTF-8">
+        <title>Listado de ciudades</title>
+
+        <link rel="stylesheet"
+              href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+
+        <link rel="stylesheet"
+              href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    </head>
+
+    <body class="bg-light">
+
+        <div class="container mt-4">
+
+            <h2 class="mb-4">Listado de ciudades</h2>
+
+            <p><strong>Total de ciudades:</strong>
+                <span th:text="${totalCiudades}"></span>
+            </p>
+
+            <!-- FORMULARIO CREAR / EDITAR -->
+
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    Agregar / Modificar ciudad
+                </div>
+
+                <div class="card-body">
+
+                    <form th:action="@{/ciudad/guardar}" th:object="${ciudad}" method="post">
+
+                        <input type="hidden" th:field="*{idCiudad}"/>
+
+                        <div class="row g-2">
+
+                            <div class="col-md-2">
+                                <input type="text"
+                                       th:field="*{nombreCiudad}"
+                                       class="form-control"
+                                       placeholder="Ciudad"
+                                       required>
+                            </div>
+
+                            <div class="col-md-2">
+                                <input type="text"
+                                       th:field="*{hora}"
+                                       class="form-control"
+                                       placeholder="Hora"
+                                       required>
+                            </div>
+
+                            <div class="col-md-2">
+                                <input type="text"
+                                       th:field="*{clima}"
+                                       class="form-control"
+                                       placeholder="Clima"
+                                       required>
+                            </div>
+
+                            <div class="col-md-2">
+                                <input type="number"
+                                       step="0.1"
+                                       th:field="*{temperatura}"
+                                       class="form-control"
+                                       placeholder="Temperatura"
+                                       required>
+                            </div>
+
+                            <div class="col-md-2">
+                                <input type="text"
+                                       th:field="*{diaNoche}"
+                                       class="form-control"
+                                       placeholder="Día/Noche"
+                                       required>
+                            </div>
+
+                            <div class="col-md-2">
+                                <select th:field="*{pais.idPais}"
+                                        class="form-select"
+                                        required>
+
+                                    <option value="">Seleccione un país</option>
+
+                                    <option th:each="p : ${paises}"
+                                            th:value="${p.idPais}"
+                                            th:text="${p.nombrePais}">
+                                    </option>
+
+                                </select>
+                            </div>
+
+                            <div class="col-md-12 mt-3">
+                                <button type="submit" class="btn btn-success">
+                                    <i class="fa fa-save"></i> Guardar
+                                </button>
+                            </div>
+
+                        </div>
+
+                    </form>
+
+                </div>
+            </div>
+
+
+            <!-- TABLA DE CIUDADES -->
+
+            <table class="table table-striped table-bordered">
+
+                <thead class="table-dark">
+                    <tr>
+
+                        <th>ID</th>
+                        <th>Ciudad</th>
+                        <th>Hora</th>
+                        <th>Clima</th>
+                        <th>Temperatura</th>
+                        <th>Día/Noche</th>
+                        <th>País</th>
+                        <th>Acciones</th>
+
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    <tr th:each="c : ${ciudades}">
+
+                        <td th:text="${c.idCiudad}"></td>
+
+                        <td th:text="${c.nombreCiudad}"></td>
+
+                        <td th:text="${c.hora}"></td>
+
+                        <td th:text="${c.clima}"></td>
+
+                        <td th:text="${c.temperatura}"></td>
+
+                        <td th:text="${c.diaNoche}"></td>
+
+                        <td th:text="${c.pais.nombrePais}"></td>
+
+                        <td>
+
+                            <a th:href="@{/ciudad/modificar/} + ${c.idCiudad}"
+                               class="btn btn-warning btn-sm">
+
+                                <i class="fa fa-edit"></i>
+
+                            </a>
+
+                            <a th:href="@{/ciudad/eliminar/} + ${c.idCiudad}"
+                               class="btn btn-danger btn-sm"
+                               onclick="return confirm('¿Desea eliminar esta ciudad?')">
+
+                                <i class="fa fa-trash"></i>
+
+                            </a>
+
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </body>
+</html>
