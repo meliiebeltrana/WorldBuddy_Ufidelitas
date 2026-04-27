@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Registro - World Buddy</title>
+    <meta charset="UTF-8"/>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Tus estilos -->
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+</head>
+<body>
+
+<div class="container mt-5">
+    <div class="card mx-auto shadow" style="max-width: 400px;">
+        <div class="card-body text-center">
+
+            <h3 class="mb-3">🌐 World Buddy</h3>
+            <h5 class="mb-4">Crear cuenta</h5>
+
+            <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+            <form th:action="@{/guardarRegistro}" th:object="${usuario}" method="post">
+
+                <input type="text" th:field="*{nombreUsuario}"
+                       class="form-control mb-3" placeholder="Nombre" required>
+
+                <input type="email" th:field="*{correo}"
+                       class="form-control mb-3" placeholder="Correo" required>
+
+                <div class="input-group mb-3">
+                    <input type="password" id="passwordRegistro"
+                           th:field="*{contrasena}" class="form-control"
+                           placeholder="Contraseña" required>
+
+                    <button class="btn btn-success" type="button"
+                            onclick="mostrarClave('passwordRegistro')">👁</button>
+                </div>
+
+                <button class="btn btn-primary w-100">Registrarme</button>
+            </form>
+
+            <a th:href="@{/login}" class="d-block mt-3">Ya tengo cuenta</a>
+
+        </div>
+    </div>
+</div>
+
+<!-- JS separado -->
+<script th:src="@{/js/rutinas.js}"></script>
+
+</body>
+</html>

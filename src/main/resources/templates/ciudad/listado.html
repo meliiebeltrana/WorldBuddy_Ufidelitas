@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+    <head>
+        <meta charset="UTF-8">
+        <title>Listado de ciudades</title>
+
+        <link rel="stylesheet" href="/webjars/bootstrap/5.3.2/css/bootstrap.min.css"/>
+        <link rel="stylesheet" href="/webjars/font-awesome/6.5.1/css/all.min.css"/>
+        <link rel="stylesheet" th:href="@{/css/estilos.css}"/>
+    </head>
+
+    <body class="bg-light">
+
+        <header th:replace="~{general/fragmentos :: header}"></header>
+
+        <div class="container mt-4">
+
+            <h2 class="mb-4">Listado de ciudades</h2>
+
+            <div th:if="${param.yaExiste}" class="alert alert-warning">
+                Esta ciudad ya está agregada en favoritos.
+            </div>
+
+            <div th:if="${param.errorFavorito}" class="alert alert-danger">
+                No se pudo agregar la ciudad a favoritos.
+            </div>
+
+            <p><strong>Total de ciudades:</strong>
+                <span th:text="${totalCiudades}"></span>
+            </p>
+
+            <!-- SOLO ADMIN VE EL CRUD -->
+            <div class="card mb-4" sec:authorize="hasRole('ADMIN')">
+                <div class="card-header bg-primary text-white">
+                    Agregar / Modificar ciudad
+                </div>
+
+                <div class="card-body">
+                    <form th:action="@{/ciudad/guardar}" th:object="${ciudad}" method="post">
+
+                        <input type="hidden" th:field="*{idCiudad}"/>
+
+                        <div class="row g-2">
+
+                            <div class="col-md-2">
+                                <input type="text"
+                                       th:field="*{nombreCiudad}"
+                                       class="form-control"
+                                       placeholder="Ciudad"
+                                       required>
+                            </div>
+
+                            <div class="col-md-2">
+                                <input type="time"
+                                       th:field="*{hora}"
+                                       class="form-control"
+                                       required>
+                            </div>
+
+                            <div class="col-md-2">
+                                <input type="text"
+                                       th:field="*{clima}"
+                                       class="form-control"
+                                       placeholder="Clima"
+                                       required>
+                            </div>
+
+                            <div class="col-md-2">
+                                <input type="number"
+                                       step="0.1"
+                                       th:field="*{temperatura}"
+                                       class="form-control"
+                                       placeholder="Temperatura"
+                                       required>
+                            </div>
+
+                            <div class="col-md-2">
+                                <input type="text"
+                                       th:field="*{diaNoche}"
+                                       class="form-control"
+                                       placeholder="Día/Noche"
+                                       required>
+                            </div>
+
+                            <div class="col-md-2">
+                                <select th:field="*{pais.idPais}"
+                                        class="form-select"
+                                        required>
+
+                                    <option value="">Seleccione un país</option>
+
+                                    <option th:each="p : ${paises}"
+                                            th:value="${p.idPais}"
+                                            th:text="${p.nombrePais}">
+                                    </option>
+
+                                </select>
+                            </div>
+
+                            <div class="col-md-12 mt-3">
+                                <button type="submit" class="btn btn-success">
+                                    <i class="fa fa-save"></i> Guardar
+                                </button>
+                            </div>
+
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- TABLA DE CIUDADES -->
+            <table class="table table-striped table-bordered">
+
+                <thead class="table-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>Ciudad</th>
+                        <th>Hora</th>
+                        <th>Clima</th>
+                        <th>Temperatura</th>
+                        <th>Día/Noche</th>
+                        <th>País</th>
+                        <th>Favoritos</th>
+                        <th sec:authorize="hasRole('ADMIN')">Acciones</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr th:each="c : ${ciudades}">
+
+                        <td th:text="${c.idCiudad}"></td>
+
+                        <td th:text="${c.nombreCiudad}"></td>
+
+                        <td>
+                            <span class="reloj-ciudad"
+                                  th:data-hora="${c.hora}"
+                                  th:text="${c.hora}">
+                            </span>
+                        </td>
+
+                        <td th:text="${c.clima}"></td>
+
+                        <td th:text="${c.temperatura + ' °C'}"></td>
+
+                        <td>
+                            <span class="dia-noche"
+                                  th:data-hora="${c.hora}"
+                                  th:text="${c.diaNoche}">
+                            </span>
+                        </td>
+
+                        <td th:text="${c.pais.nombrePais}"></td>
+
+                        <td>
+                            <a th:href="@{/favorito/agregar/} + ${c.idCiudad}"
+                               class="btn btn-success btn-sm">
+                                <i class="fa fa-star"></i> Agregar
+                            </a>
+                        </td>
+
+                        <td sec:authorize="hasRole('ADMIN')">
+
+                            <a th:href="@{/ciudad/modificar/} + ${c.idCiudad}"
+                               class="btn btn-warning btn-sm">
+                                <i class="fa fa-edit"></i>
+                            </a>
+
+                            <a th:href="@{/ciudad/eliminar/} + ${c.idCiudad}"
+                               class="btn btn-danger btn-sm"
+                               onclick="return confirm('¿Desea eliminar esta ciudad?')">
+                                <i class="fa fa-trash"></i>
+                            </a>
+
+                        </td>
+
+                    </tr>
+                </tbody>
+
+            </table>
+
+        </div>
+
+        <footer th:replace="~{general/fragmentos :: footer}"></footer>
+
+        <script src="/webjars/jquery/3.7.1/jquery.min.js"></script>
+        <script src="/webjars/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+        <script th:src="@{/js/rutinas.js}"></script>
+
+    </body>
+</html>
